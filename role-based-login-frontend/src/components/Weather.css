@@ -1,0 +1,19 @@
+.weather-widget {
+    background-color: var(--card-bg, rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+    font-weight: 500;
+    color: var(--text-dark, #1e293b);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    min-width: 170px;
+    height: 42px;
+    white-space: nowrap;
+}
