@@ -50,9 +50,18 @@ const Weather = () => {
 
     if (!weather) return null;
 
+    let icon = "⛅";
+    const wLow = weather.toLowerCase();
+    if (wLow.includes("clear") || wLow.includes("sun")) icon = "☀️";
+    else if (wLow.includes("rain") || wLow.includes("drizzle")) icon = "🌧️";
+    else if (wLow.includes("cloud")) icon = "☁️";
+    else if (wLow.includes("thunder")) icon = "⛈️";
+    else if (wLow.includes("snow")) icon = "❄️";
+
     return (
-        <div className="weather-widget">
-            <span style={{ fontSize: "1.2rem" }}>⛅</span> {weather}
+        <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <span className="text-sm leading-none">{icon}</span>
+            <span>{weather}</span>
         </div>
     );
 };

@@ -54,9 +54,8 @@ public class HRController {
 
         // Send SMS to Employee
         if (booking.getEmployeeMobileNumber() != null && !booking.getEmployeeMobileNumber().isEmpty()) {
-            String employeeMsg = String.format("Cab Booked: A %s is scheduled for %s at %s. Driver %s will be assigned shortly.",
-                    booking.getCabType(), booking.getPickupTime(), booking.getPickup(),
-                    "ASSIGNED".equals(booking.getStatus()) && booking.getDriverEmail() != null ? "has been" : "will be");
+            String employeeMsg = String.format("Cab Confirmed! 🚕 Your ride is scheduled for %s at %s. Your driver will reach the pickup location shortly, please be ready!",
+                    booking.getPickupTime(), booking.getPickup());
             smsService.sendSms(booking.getEmployeeMobileNumber(), employeeMsg);
         }
 
@@ -64,7 +63,7 @@ public class HRController {
         if ("ASSIGNED".equals(booking.getStatus()) && booking.getDriverEmail() != null) {
             Driver driver = this.driverRepo.findByEmail(booking.getDriverEmail());
             if (driver != null && driver.getMobileNumber() != null && !driver.getMobileNumber().isEmpty()) {
-                String driverMsg = String.format("New Trip Assigned: Pickup %s at %s. Time: %s. Contact: %s.",
+                String driverMsg = String.format("🚕 NEW RIDE ASSIGNED !\nRider: %s\nPickup: %s\nTime: %s\nPhone: %s",
                         booking.getEmployeeName(), booking.getPickup(), booking.getPickupTime(),
                         booking.getEmployeeMobileNumber() != null ? booking.getEmployeeMobileNumber() : "N/A");
                 smsService.sendSms(driver.getMobileNumber(), driverMsg);

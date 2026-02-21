@@ -10,4 +10,5 @@ import com.example.rollbasedlogin.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    java.util.List<User> findByRole(String role);
 }

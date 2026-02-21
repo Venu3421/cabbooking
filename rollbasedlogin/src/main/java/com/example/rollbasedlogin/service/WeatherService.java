@@ -74,24 +74,25 @@ public class WeatherService {
                 new ParameterizedTypeReference<Map<String, Object>>() {}
             );
 
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                Map<String, Object> body = response.getBody();
+            Map<String, Object> body = response.getBody();
+            if (response.getStatusCode().is2xxSuccessful() && body != null) {
                 String name = (String) body.get("name");
                 Map<String, Object> main = (Map<String, Object>) body.get("main");
                 List<Map<String, Object>> weatherList = (List<Map<String, Object>>) body.get("weather");
 
                 if (main != null && weatherList != null && !weatherList.isEmpty()) {
                     Map<String, Object> weather = weatherList.get(0);
-                    double temp = 0;
                     Object tempObj = main.get("temp");
-                    if (tempObj instanceof Integer) {
-                        temp = (Integer) tempObj;
-                    } else if (tempObj instanceof Double) {
-                        temp = (Double) tempObj;
+                    double temp = 0.0;
+                    if (tempObj instanceof Integer i) {
+                        temp = i.doubleValue();
+                    } else if (tempObj instanceof Double d) {
+                        temp = d;
                     }
                     String description = (String) weather.get("description");
-                    this.currentWeather = String.format("Current weather in %s: %.1f°C, %s",
-                            name != null ? name : city, temp, description);
+                    String locationName = name != null ? name.split(" ")[0] : city;
+                    String capitalizedDesc = description.substring(0, 1).toUpperCase() + description.substring(1);
+                    this.currentWeather = String.format("%s %.1f°C %s", locationName, temp, capitalizedDesc);
                     logger.info("Weather updated: {}", this.currentWeather);
                 } else {
                     this.currentWeather = "Weather data incomplete.";
@@ -104,7 +105,7 @@ public class WeatherService {
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             logger.error("HTTP error fetching weather (check API key!): {} - {}", e.getStatusCode(), e.getMessage());
             this.currentWeather = "Weather unavailable (invalid API key).";
-        } catch (Exception e) {
+        } catch (org.springframework.web.client.RestClientException e) {
             logger.error("Error fetching weather: {}", e.getMessage());
             this.currentWeather = "Weather unavailable.";
         }

@@ -76,4 +76,31 @@ public class DriverController {
         }
     }
 
+    @PutMapping("/toggle-availability")
+    public ResponseEntity<String> toggleAvailability(@RequestParam String email, @RequestParam boolean available) {
+        Optional<Driver> driverOpt = this.driverRepo.findAll()
+                .stream()
+                .filter(d -> d.getEmail().equals(email))
+                .findFirst();
+
+        if (driverOpt.isPresent()) {
+            Driver driver = driverOpt.get();
+            driver.setAvailable(available);
+            this.driverRepo.save(driver);
+            return ResponseEntity.ok(available ? "You are now ONLINE 🟢" : "You are now OFFLINE 🔴");
+        }
+        return ResponseEntity.status(404).body("Driver not found");
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Boolean> getDriverStatus(@RequestParam String email) {
+        Optional<Driver> driverOpt = this.driverRepo.findAll()
+                .stream()
+                .filter(d -> d.getEmail().equals(email))
+                .findFirst();
+
+        return driverOpt.map(driver -> ResponseEntity.ok(driver.isAvailable()))
+                        .orElseGet(() -> ResponseEntity.status(404).body(false));
+    }
+
 }
